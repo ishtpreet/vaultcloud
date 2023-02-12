@@ -1,0 +1,10 @@
+.indexContainer {
+  height: 10em;
+  position: relative }
+.indexContainer p {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+}
