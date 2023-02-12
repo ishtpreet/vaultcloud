@@ -1,5 +1,5 @@
 import { Spacer, Container, Row, Text, Button} from '@nextui-org/react';
-
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
           </Row>
           <div>
           <Spacer y={1} x={1}>
-          <Button size="lg">Get Started</Button></Spacer>
+          <Button as={Link} href="/register" size="lg">Get Started</Button></Spacer>
           </div>
    </Container>
   )

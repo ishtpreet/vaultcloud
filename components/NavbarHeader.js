@@ -29,12 +29,9 @@ export default function NavbarHeader() {
           <Navbar.Link as={Link} isActive={router.pathname === '/login' ? true : false} href="/login">
             Login
           </Navbar.Link>
-          <Navbar.Item>
           <Navbar.Link as={Link} isActive={router.pathname === '/register' ? true : false} href="/register">
             Sign Up
           </Navbar.Link>
-           
-            </Navbar.Item>
             <Navbar.Item>
               <div>
               <CiLight size={24}/>
