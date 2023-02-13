@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { Container, Row, Card, Spacer, Text, User } from '@nextui-org/react'
 
 
-export default function profile() {
+export default function Profile() {
     const router = useRouter()
     const {data: session} = useSession({required: true, onUnauthenticated(){router.push("/")}})
   return (

@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import '../styles/Dashboard.module.css'
 
-export default function dashboard() {
+export default function Dashboard() {
     let router = useRouter()
     const { data: session } = useSession({required: true, 
         onUnauthenticated(){
