@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import connectDB from "../../../libs/utils/connectDB";
-import Users from '../../libs/models/Users'
+// import Users from '../../libs/models/Users'
 
 export default connectDB(async function create(req, res){
 
