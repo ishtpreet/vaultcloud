@@ -4,7 +4,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import Users from "../../../libs/models/Users";
 
-export default connectDB(async function create(req, res){
+export default connectDB(async function list(req, res){
 
     const session = await unstable_getServerSession(req, res, authOptions)
     if (session) {
@@ -12,11 +12,13 @@ export default connectDB(async function create(req, res){
         // console.log("Session", JSON.stringify(session, null, 2))
         // console.log("Email", session.user.email)
         const user = await Users.findOne({email: session.user.email})
-        const newRoom = new Rooms({
-            createdBy: user._id
-        })
-        await newRoom.save()
-        res.status(200).json({message: 'success', shortId: newRoom.shortId, name: newRoom.name})
+        // const newRoom = new Rooms({
+        //     createdBy: user._id
+        // })
+        // await newRoom.save()
+        const rooms = await Rooms.find({createdBy: user._id})
+
+        res.status(200).json({message: 'success', rooms: rooms})
     } else {
         // Not Signed in
         res.status(401)
