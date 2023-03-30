@@ -25,7 +25,7 @@ export default connectDB(async function upload(req, res){
                 // let { name, type } = req.body;
               
                 const post = await s3.createPresignedPost({
-                  Bucket: process.env.BUCKET_NAME,
+                  Bucket: process.env.AWS_BUCKET_NAME,
                   Fields: {
                     key: `${user._id}/${req.query.file}`,
                     'Content-Type': req.query.fileType,

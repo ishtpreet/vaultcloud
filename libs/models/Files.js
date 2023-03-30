@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { nanoid } from 'nanoid';
 
-const Files = new mongoose.Schema({
+const files = new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -42,4 +42,8 @@ const Files = new mongoose.Schema({
 }
 })
 
-module.exports = mongoose.model("Files",Files);
+mongoose.models = {};
+
+var Files = mongoose.model('Files', files);
+
+export default Files;

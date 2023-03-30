@@ -5,6 +5,9 @@ import '../styles/Dashboard.module.css'
 import axios from "axios"
 import { IconButton, ButtonBase } from '@material-ui/core';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function upload() {
     let router = useRouter()
     const { data: session } = useSession({required: true, 
@@ -16,15 +19,6 @@ export default function upload() {
     //     router.push("/")
     // }
 
-    const createRoom = async () => { 
-        const res = await axios.post("/api/room/create")
-        console.log(res.data)
-        //router.push(`/room/${res.data.shortId}`)
-    }
-    const listRooms = async () => {
-        const res = await axios.get("/api/room/list")
-        console.log(res.data)
-    }
     const uploadFile = async (e) =>{
       const file = e.target.files[0]
       const fileName = encodeURIComponent(file.name)
@@ -33,6 +27,7 @@ export default function upload() {
       const res = await fetch(
         `/api/files/getSignedUrl?file=${fileName}&fileType=${fileType}`
       )
+      console.log(res)
       const { url, fields } = await res.json()
       const formData = new FormData()
       // formData.append(file)
@@ -43,12 +38,18 @@ export default function upload() {
         method: 'POST',
         body: formData,
       })
+      console.log(url, upload)
     
       if (upload.ok) {
         console.log('Uploaded successfully!')
+        toast.success('File Uploaded Successfully!', {
+          position: toast.POSITION.BOTTOM_RIGHT
+      }); 
         // TODO: Add detials to MongoDB (Files Model)
       } else {
-        console.error('Upload failed.')
+        toast.error('Error While Uploading File', {
+          position: toast.POSITION.BOTTOM_RIGHT
+      }); 
       }
     }
 
@@ -71,41 +72,22 @@ export default function upload() {
             <Grid.Container gap={3} justify="center" alignItems="center" style={{marginTop: '2%'}}>
       <Grid xs={4}>
       <Row justify="center" align="center">
-{/* Put your content HEre */   
-    <div style={{
-        display: 'flex',
-        margin: 'auto',
-        width: 400,
-        flexWrap: 'wrap',
-      }}>
-        <div style={{ width: '100%', float: 'left' }}>
-          <h3>Upload your file here-</h3> <br />
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          id="contained-button-file"
-        />
-        <label htmlFor="contained-button-file">
-          <Button variant="contained" color="primary" component="span">
-            Upload
-          </Button>
-        </label>
-        <h3>  OR  </h3>
+        <Container fluid>
+          <Row justify="center" align="center">
         <input accept="image/*" id="icon-button-file"
           type="file" style={{ display: 'none' }} onChange={uploadFile}/>
-        <label htmlFor="icon-button-file">
+        <label htmlFor="icon-button-file">Upload File
           <IconButton color="primary" aria-label="upload picture"
           component="span">
             <PhotoCamera />
           </IconButton>
         </label>
-      </div>
-}
+        </Row>
+        </Container>
         </Row>
         </Grid>
         </Grid.Container>
+        <ToastContainer />
     </Container>
   )
 }
