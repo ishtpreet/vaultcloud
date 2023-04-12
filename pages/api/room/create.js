@@ -16,7 +16,8 @@ export default connectDB(async function create(req, res){
             createdBy: user._id
         })
         await newRoom.save()
-        res.status(200).json({message: 'success', shortId: newRoom.shortId, name: newRoom.name})
+
+        res.status(200).json({message: 'success', shortId: newRoom.shortId, name: newRoom.name, userId: newRoom.createdBy[0], roomId: newRoom._id})
     } else {
         // Not Signed in
         res.status(401)

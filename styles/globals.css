@@ -1,4 +1,4 @@
-html,
+/* html,
 body {
   padding: 0;
   margin: 0;
@@ -23,4 +23,25 @@ a {
     color: white;
     background: black;
   }
+} */
+
+.message {
+  display: flex;
+  align-items: center;
+}
+
+
+.sent {
+  flex-direction: row-reverse;
+}
+
+.sent p {
+  /* color: white; */
+  /* background: #0b93f6; */
+  align-self: flex-end;
+}
+.received p {
+  /* background: #e5e5ea; */
+  /* border-radius: '5%'; */
+  /* color: black; */
 }

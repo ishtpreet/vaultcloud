@@ -5,7 +5,7 @@ import useDarkMode from 'use-dark-mode'
 
 import NavbarHeader from '../libs/components/NavbarHeader'
 import Head from 'next/head';
-
+import '../styles/globals.css'
 
 function MyApp({ Component, pageProps:{session, ...pageProps} }) {
 
@@ -23,14 +23,14 @@ function MyApp({ Component, pageProps:{session, ...pageProps} }) {
   })
   const darkMode = useDarkMode(false);
   return (
+  <NextUIProvider theme={darkTheme}>
   <SessionProvider session={session}>
   {/* <NextUIProvider theme={darkMode.value ? darkTheme : lightTheme}> */}
-  <NextUIProvider theme={darkTheme}>
   <Head>{CssBaseline.flush()}</Head>
   <NavbarHeader />
   <Component {...pageProps} />
-  </NextUIProvider>
   </SessionProvider>
+  </NextUIProvider>
   )
 }
 

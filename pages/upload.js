@@ -2,11 +2,9 @@ import { Container, Grid, Card, Text, Spacer, Button, Row } from "@nextui-org/re
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import '../styles/Dashboard.module.css'
-import axios from "axios"
-import { IconButton, ButtonBase } from '@material-ui/core';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {FcUpload} from 'react-icons/fc'
 
 export default function upload() {
     let router = useRouter()
@@ -60,15 +58,6 @@ export default function upload() {
         <div style={{textAlign: "center"}}>
             <p> {(session && session.user) ? <h3>Welcome {session.user.name}</h3> : null}</p>
         </div>
-         {/* <Grid.Container gap={2} justify="center">
-            <Grid xs={4}>
-            </Grid>
-            <Grid xs={4}>
-            {(session && session.user) ? <h3>Welcome {session.user.name}</h3> : null}
-            </Grid>
-            <Grid xs={4}>
-            </Grid>
-            </Grid.Container> */}
             <Grid.Container gap={3} justify="center" alignItems="center" style={{marginTop: '2%'}}>
       <Grid xs={4}>
       <Row justify="center" align="center">
@@ -76,11 +65,7 @@ export default function upload() {
           <Row justify="center" align="center">
         <input accept="image/*" id="icon-button-file"
           type="file" style={{ display: 'none' }} onChange={uploadFile}/>
-        <label htmlFor="icon-button-file">Upload File
-          <IconButton color="primary" aria-label="upload picture"
-          component="span">
-            <PhotoCamera />
-          </IconButton>
+        <label htmlFor="icon-button-file"><FcUpload /> &nbsp;Upload File 
         </label>
         </Row>
         </Container>

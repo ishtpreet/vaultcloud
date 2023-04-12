@@ -1,13 +1,28 @@
 import { Container, Grid, Card, Text, Spacer, Button, Row, Table } from "@nextui-org/react"
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import '../styles/Dashboard.module.css'
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { collection, addDoc, doc, getDocs, serverTimestamp } from "firebase/firestore"; 
+import {MdOpenInNew} from 'react-icons/md'
+import Link from "next/link"
+
+
+import '../styles/Dashboard.module.css'
+import {db, app} from '../firebase'
 
 export default function Dashboard() {
+  // console.log("db -- ", db)
+  // const docRef = doc(db, "rooms")
+  
+//   collection(db, "rooms").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//         // doc.data() is never undefined for query doc snapshots
+//         console.log(doc.id, " => ", doc.data());
+//     });
+// });
   const [roomsData, setRoomsData] = useState()
   const [showRooms, setShowRooms] = useState(false)
     let router = useRouter()
@@ -25,6 +40,21 @@ export default function Dashboard() {
         console.log(res.data)
         if(res.data.message == 'success')
         {
+          console.log("created!")
+          try{
+            const addRoomRef = await addDoc(collection(db, "rooms"), {
+              roomId: res.data.roomId,
+              shortId: res.data.shortId,
+              name: res.data.name,
+              createdBy: res.data.userId,
+              createdAt: serverTimestamp()
+  
+            })
+            console.log(addRoomRef)
+          }
+          catch(e){
+            console.log(e)
+          }
           toast.success(res.data.name+' Room Created!', {
             position: toast.POSITION.BOTTOM_RIGHT
         }); 
@@ -115,7 +145,7 @@ export default function Dashboard() {
         <Table.Row key={key}>
           <Table.Cell>{key+1}</Table.Cell>
           <Table.Cell>{room.name}</Table.Cell>
-          <Table.Cell><Button color="secondary" auto>Explore Room</Button></Table.Cell>
+          <Table.Cell><Button as={Link} href={`/room/${room.shortId}`} color="secondary" auto><MdOpenInNew /> &nbsp; Explore Room</Button></Table.Cell>
           <Table.Cell><Button color="primary" auto>Invite Friends</Button></Table.Cell>
           <Table.Cell><Button color="error" auto>Delete Room</Button></Table.Cell>
         </Table.Row>)}
