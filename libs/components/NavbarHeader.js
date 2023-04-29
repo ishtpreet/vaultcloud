@@ -32,6 +32,7 @@ export default function NavbarHeader() {
          <Navbar.Content variant="highlight-rounded">
           <Navbar.Link as={Link} isActive={router.pathname === '/dashboard' ? true : false} href="/dashboard">Dashboard</Navbar.Link>
           <Navbar.Link as={Link} isActive={router.pathname === '/rooms' ? true : false} href="/rooms">Rooms</Navbar.Link>
+          <Navbar.Link as={Link} isActive={router.pathname === '/requests' ? true : false} href="/requests">Requests</Navbar.Link>
           <Navbar.Link as={Link} isActive={router.pathname === '/listfiles' ? true : false} href="/listfiles">Files</Navbar.Link>
           <Navbar.Link as={Link} isActive={router.pathname === '/upload' ? true : false} href="/upload">Upload Files</Navbar.Link>
           <Navbar.Link as={Link} isActive={router.pathname === '/profile' ? true : false} href="/profile">{session.user.name}</Navbar.Link>
