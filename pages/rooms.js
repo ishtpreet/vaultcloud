@@ -30,6 +30,23 @@ const onPressSettingsBtn = async (e, roomData) =>{
   setRoomData(roomData)
   setVisible(true)
 }
+const onPressDeleteBtn = async (e, roomData) =>{
+  //e.preventDefault()
+  console.log("RoomData",roomData)
+  axios.get(`/api/room/delete?id=${roomData._id}`)
+  .then((res)=>{
+    console.log(res.data)
+    toast.success('Room Deleted', {
+      position: toast.POSITION.BOTTOM_RIGHT
+  });
+  })
+  .catch((err)=>{
+    console.log(err)
+    toast.error('Room not Deleted', {
+      position: toast.POSITION.BOTTOM_RIGHT
+  });
+  })
+}
 const onPressCancelBtn = () =>{
   setVisible(false)
   setRoomData("")
@@ -93,7 +110,7 @@ const sendInvite = async () =>{
             <Button onPress={(e) => onPressSettingsBtn(e, room)} color="secondary" size="sm" auto>
              <GiSettingsKnobs />&nbsp; Settings
             </Button>&nbsp;
-            <Button color="error" size="sm" auto><AiFillDelete /> &nbsp;Delete</Button>
+            <Button color="error" size="sm" auto onClick={(e) => onPressDeleteBtn(e, room)}><AiFillDelete /> &nbsp;Delete</Button>
           </Row>
         </Card.Footer>
       </Card>
