@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {FcUpload} from 'react-icons/fc'
 
-export default function upload() {
+export default function Upload() {
     let router = useRouter()
     const { data: session } = useSession({required: true, 
         onUnauthenticated(){

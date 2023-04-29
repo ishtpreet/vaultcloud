@@ -7,7 +7,7 @@ import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function listfiles({data}) {
+export default function Listfiles({data}) {
     console.log(data.data.Contents)
     let router = useRouter()
     const { data: session } = useSession({required: true, 

@@ -9,7 +9,7 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function listRequests({data}) {
+export default function ListRequests({data}) {
     // Check if user has any Room Invitations yet
     console.log(data)
     const showInvite = (data.message == 'success') ? true : false     

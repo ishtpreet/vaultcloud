@@ -10,7 +10,7 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function listRooms({data}) {
+export default function ListRooms({data}) {
     // console.log(data)
     const { setVisible, bindings } = useModal();
     const [roomData, setRoomData] = useState()
