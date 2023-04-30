@@ -1,34 +1,33 @@
 'use-client';
-
 import {useState, useRef, useEffect} from 'react'
-import { getServerSession } from "next-auth/next"
 import { Container, Grid, Card, Text, Spacer, Button, Row, Col, Input} from "@nextui-org/react"
 import {BsFillSendFill} from 'react-icons/bs'
 import {GiLighthouse} from 'react-icons/gi'
 import Link from "next/link"
-import { useSession } from "next-auth/react"
-import {collection, addDoc, serverTimestamp, query, orderBy, limit} from 'firebase/firestore'
+import {collection, addDoc, serverTimestamp, query, orderBy, limit, where} from 'firebase/firestore'
 import {useCollectionData} from 'react-firebase-hooks/firestore'
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 
-import { authOptions } from '../api/auth/[...nextauth]'
 import {db} from '../../firebase'
 import ChatMessage from '../../libs/components/ChatMessage'
 
 export async function getServerSideProps(ctx){
-    // console.log(req)
-const session = await getServerSession(ctx.req, ctx.res, authOptions)
     // TODO: Fix http & HTTPS based on url
-    const response = await fetch(`http://${ctx.req.headers.host}/api/room/check?roomFriendlyId=${ctx.query.id}&email=${session.user.email}`);
+    
+    const response = await fetch(`http://${ctx.req.headers.host}/api/room/check?roomFriendlyId=${ctx.query.id}`, {headers: {Cookie: ctx.req.headers.cookie}});
     // console.log(response)
     const data = await response.json()
-    // console.log(data)
+    console.log(data.message)
     if(data.message === 'success'){
         console.log("Valid")
         return {
             props: {
               id: ctx.query.id,
               roomName: data.roomName,
-              roomId: data.roomId
+              roomId: data.roomId,
+              userName: data.userName,
+              userId: data.userId
             }
           };
     }
@@ -52,14 +51,21 @@ const session = await getServerSession(ctx.req, ctx.res, authOptions)
 // Main Component
 export default function Chat(props) {
   console.log(props)
+  const router = useRouter()
+  const { data: session } = useSession({required: true, 
+    onUnauthenticated(){
+        router.push("/")
+    }})
+
     const dummyRef = useRef()
     const [messageVal, setMessageVal] = useState("")
     const messageRef = collection(db, "messages")
+      console.log("session", session)
 
-    const q = query(messageRef, orderBy('createdAt'), limit(25))
+    const q = query(messageRef, where("roomId", "==", props.roomId), orderBy('createdAt'), limit(25))
 
-    const [messages] = useCollectionData(q, {idField: 'id'})
-    console.log(messages)
+    const [messages, loading, error] = useCollectionData(q, {idField: 'id'})
+    console.log(messages, loading, error)
   const sendMessage = async () =>{
     // e.preventDefault();
     console.log("pressed")
@@ -67,7 +73,9 @@ export default function Chat(props) {
     // Add message to Firebase
     const docRef = await addDoc(collection(db, "/messages"), {
         roomId: props.roomId,
-        sentBy: true,
+        sentBy: props.userId,
+        userName: props.userName,
+        userEmail: session.user.email,
         message: messageVal,
         createdAt: serverTimestamp()
     })
@@ -87,20 +95,8 @@ export default function Chat(props) {
                 <Row >
                     <Container fluid style={{overflowY: 'scroll', height: '280px'}}>
                         {messages && messages.map((message, index)=>(
-                            <ChatMessage key={index} userId={message.sentBy} text={message.message} userName="Me"/>
+                            <ChatMessage key={index} userEmail={message.userEmail} text={message.message} userName={message.userName} sessionEmail={session.user.email}/>
                         ))}
-                        {/* <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={true} text="I;ve sent this" userName="Me"/>
-                        <ChatMessage userId={false} text="I;ve received this" userName="CJ"/>
-                        <ChatMessage userId={false} text="I;ve received this" userName="CJ"/>
-                        <ChatMessage userId={false} text="I;ve received this" userName="CJ"/>
-                        <ChatMessage userId={false} text="I;ve received this" userName="CJ"/>
-                        <ChatMessage userId={false} text="I;ve received this" userName="CJ"/> */}
                         <span ref={dummyRef}></span>
                     <Row >
                         <Row style={{position: 'fixed', height: '80px', bottom: 0, width: "100%"}}>

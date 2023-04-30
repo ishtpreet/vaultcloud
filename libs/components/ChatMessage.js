@@ -2,16 +2,16 @@ import React from 'react'
 import { Avatar, Text } from '@nextui-org/react'
 
 export default function ChatMessage (props){
-    const {text, userId, userName} = props
-    // TODO: Message Class
-    console.log(userId)
-    const messageClass = userId === true ? 'sent' : 'received'
-    const textClass = userId === true ? 'primary' : 'secondary'
+    const {text, userEmail, userName, sessionEmail} = props
+
+    console.table(props)
+    const messageClass = userEmail === sessionEmail ? 'sent' : 'received'
+    const textClass = userEmail === sessionEmail ? 'primary' : 'secondary'
 
     return(
         <div className={`message ${messageClass}`}>
             {/* TODO: Replace text with user Name */}
-            <Avatar  squared text={userName}/>
+            <Avatar size="xs" color={textClass === 'primary' ? 'secondary' : 'gradient'} text={userName}/>&nbsp;
             <Text color={textClass}>{text}</Text>
         </div>
     )
