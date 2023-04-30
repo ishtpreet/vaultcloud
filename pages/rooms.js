@@ -1,22 +1,24 @@
 'use client';
 import { useEffect, useState } from "react"
-import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading } from "@nextui-org/react"
+import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading, Switch } from "@nextui-org/react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import {MdOpenInNew} from 'react-icons/md'
 import {GiSettingsKnobs} from 'react-icons/gi'
 import {AiFillDelete} from 'react-icons/ai'
+import {BsShareFill, BsPersonCircle} from 'react-icons/bs'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function ListRooms({data}) {
-    // console.log(data)
+    console.log(data)
     const { setVisible, bindings } = useModal();
     const [roomData, setRoomData] = useState()
     const [isInviteLoading, setIsInviteLoading] = useState(false)
     const [receiptEmail, setReceiptEmail] = useState("")
+    const [sharedRooms, setSharedRooms] = useState(false)
     
     let router = useRouter()
     const { data: session } = useSession({required: true, 
@@ -40,6 +42,7 @@ const onPressDeleteBtn = async (e, roomData) =>{
     toast.success('Room Deleted', {
       position: toast.POSITION.BOTTOM_RIGHT
   });
+  refreshData()
   })
   .catch((err)=>{
     console.log(err)
@@ -78,15 +81,21 @@ const sendInvite = async () =>{
     })
   }
 }
+const refreshData = () => {
+  router.replace(router.asPath);
+}
 
   return (
     <Container fluid>
         <Spacer y={1} />
+        <Row justify="center" alignItems="center">
+        <Switch checked={sharedRooms} onChange={(e)=> setSharedRooms(!sharedRooms)} size="xl" iconOn={<BsShareFill />} iconOff={<BsPersonCircle />}/>
+          </Row>
     <Grid.Container gap={3} justify="center" alignItems="center" style={{marginTop: '1%'}}>
       
       {/* <Row justify="center" align="center"> */}
       <Grid.Container gap={3} justify="center" alignItems="center">
-        {data && data.rooms.map((room, key)=>
+        {data && !sharedRooms && data.rooms.map((room, key)=>
         <Grid xs={4} key={key}>
         <Card css={{ mw: "330px" }}>
         <Card.Image
@@ -148,7 +157,7 @@ const sendInvite = async () =>{
       {roomData.members.map((member, key)=>
       <Table.Row key={key}>
           <Table.Cell>{key+1}</Table.Cell>
-          <Table.Cell>{member}</Table.Cell>
+          <Table.Cell>{member.name}</Table.Cell>
           <Table.Cell><Button color="error" auto>Remove</Button></Table.Cell>
           </Table.Row>)}
         </Table.Body>
@@ -177,6 +186,38 @@ const sendInvite = async () =>{
           </Popover>
         </Modal.Footer>
       </Modal>
+      {/* Shared Rooms */}
+      <Grid.Container gap={3} justify="center" alignItems="center">
+      {data && sharedRooms && data.sharedRooms.map((sharedRoom, key)=>(
+        <Grid xs={4} key={key}>
+        <Card css={{ mw: "330px" }}>
+        <Card.Image
+            src={`https://loremflickr.com/320/240`}
+            objectFit="cover"
+            width="100%"
+            height={240}
+            alt="Image"
+        />
+        <Card.Body css={{ py: "$10" }}>
+          <Text>
+            Room Name: {sharedRoom.roomId.name} <br />
+            Room Owner: {sharedRoom.createdBy.name} <br />
+            Members: {sharedRoom.roomId.members.length} <br />
+            Last Modified: {new Date(sharedRoom.roomId.updatedAt).toLocaleDateString()}
+          </Text>
+        </Card.Body>
+        <Card.Divider />
+        <Card.Footer>
+          <Row justify="flex-end">
+            <Button as={Link} href={`/room/${sharedRoom.roomId.shortId}`} color="success" size="sm" auto>
+             <MdOpenInNew />&nbsp; Open
+            </Button>
+          </Row>
+        </Card.Footer>
+      </Card>
+        </Grid>
+      ))}
+      </Grid.Container>
       <ToastContainer />
     </Container>
   )
