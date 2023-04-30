@@ -1,3 +1,4 @@
+'use client';
 import { Container, Grid, Card, Text, Spacer, Button, Row, Table } from "@nextui-org/react"
 import {useState, useEffect} from 'react'
 import { useSession } from "next-auth/react"

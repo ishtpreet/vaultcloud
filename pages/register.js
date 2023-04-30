@@ -1,3 +1,4 @@
+'use-client';
 import {useState} from 'react'
 import { Spacer, Text, Button, Card, Input, Grid} from '@nextui-org/react';
 import {RiLockPasswordFill, RiMailOpenFill, RiText} from 'react-icons/ri'

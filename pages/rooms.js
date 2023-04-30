@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from "react"
 import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading } from "@nextui-org/react"
 import { useSession } from "next-auth/react"
@@ -83,7 +84,8 @@ const sendInvite = async () =>{
         <Spacer y={1} />
     <Grid.Container gap={3} justify="center" alignItems="center" style={{marginTop: '1%'}}>
       
-      <Row justify="center" align="center">
+      {/* <Row justify="center" align="center"> */}
+      <Grid.Container gap={3} justify="center" alignItems="center">
         {data && data.rooms.map((room, key)=>
         <Grid xs={4} key={key}>
         <Card css={{ mw: "330px" }}>
@@ -116,7 +118,8 @@ const sendInvite = async () =>{
       </Card>
         </Grid>
         )}
-        </Row>
+        {/* </Row> */}
+        </Grid.Container>
         </Grid.Container>
         <Modal
         blur

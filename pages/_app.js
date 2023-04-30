@@ -1,4 +1,5 @@
 // import '../styles/globals.css'
+'use client';
 import { SessionProvider } from "next-auth/react"
 import { NextUIProvider, createTheme, CssBaseline } from '@nextui-org/react';
 import useDarkMode from 'use-dark-mode'
