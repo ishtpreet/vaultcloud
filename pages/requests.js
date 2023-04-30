@@ -60,15 +60,15 @@ const acceptInvite = async (e, requestId, roomId) =>{
         </Card.Body>
         {/* <Card.Divider /> */}
         <Card.Footer>
+          {invite.accepted ? <Row justify="flex-end">
+            <Button color="success" size="sm" auto disabled>Accepted</Button>
+          </Row>:
           <Row justify="flex-end">
             <Button color="success" size="sm" auto onClick={(e)=>acceptInvite(e, invite._id, invite.roomId)}>
              <TiTick />&nbsp; Accept
             </Button>&nbsp;
-            {/* <Button onPress={(e) => onPressSettingsBtn(e, invite)} color="secondary" size="sm" auto>
-             <GiSettingsKnobs />&nbsp; Settings
-            </Button>&nbsp; */}
             <Button color="error" size="sm" auto><ImCross /> &nbsp;Decline</Button>
-          </Row>
+          </Row>}
         </Card.Footer>
       </Card>
         </Row>
@@ -84,7 +84,7 @@ export async function getServerSideProps(ctx) {
     const res = await fetch(`http://${ctx.req.headers.host}/api/invite/get`, {headers: {Cookie: ctx.req.headers.cookie}})
     // console.log("res", res)
     const data = await res.json()
-    // console.log(data)
+    console.log(data)
     // Pass data to the page via props
     return { props: { data } }
   }
