@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading, Switch } from "@nextui-org/react"
 import { useSession } from "next-auth/react"
+import { getServerSession } from "next-auth/next"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import {MdOpenInNew} from 'react-icons/md'
@@ -11,6 +12,7 @@ import {BsShareFill, BsPersonCircle} from 'react-icons/bs'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function ListRooms({data}) {
     console.log(data)
@@ -225,10 +227,23 @@ const refreshData = () => {
 
 export async function getServerSideProps(ctx) {
     // Fetch data from external API
-    const res = await fetch(`http://${ctx.req.headers.host}/api/room/list`, {headers: {Cookie: ctx.req.headers.cookie}})
-    // console.log("res", res)
-    const data = await res.json()
-    // console.log(data)
-    // Pass data to the page via props
-    return { props: { data } }
+    const session = await getServerSession(ctx.req, ctx.res, authOptions)
+    if(session){
+
+      const res = await fetch(`http://${ctx.req.headers.host}/api/room/list`, {headers: {Cookie: ctx.req.headers.cookie}})
+      // console.log("res", res)
+      const data = await res.json()
+      // console.log(data)
+      // Pass data to the page via props
+      return { props: { data } }
+    }
+    else{
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/",
+        },
+        props:{},
+      };
+    }
   }
