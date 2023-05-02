@@ -22,7 +22,7 @@ export default function Listfiles({data}) {
         <Spacer y={1} />
     <Grid.Container gap={3} justify="center" alignItems="center" style={{marginTop: '2%'}}>
       
-      <Row justify="center" align="center">
+      <Grid.Container gap={3} justify="center" alignItems="center">
         {data.data && data.data.Contents.map((content, key)=>
         <Grid xs={4} key={key}>
         <Card css={{ mw: "330px" }}>
@@ -52,7 +52,7 @@ export default function Listfiles({data}) {
       </Card>
         </Grid>
         )}
-        </Row>
+        </Grid.Container>
         </Grid.Container>
     </Container>
   )
