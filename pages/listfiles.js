@@ -27,7 +27,7 @@ export default function Listfiles({data}) {
         <Grid xs={4} key={key}>
         <Card css={{ mw: "330px" }}>
         <Card.Image
-            src={`https://vaultcloud111.s3.ap-south-1.amazonaws.com/${content.Key}`}
+            src={`https://testminorbucket.s3.ap-south-1.amazonaws.com/${content.Key}`}
             objectFit="cover"
             width="100%"
             height={240}

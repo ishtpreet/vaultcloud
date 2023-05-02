@@ -15,7 +15,7 @@ export default function ChatMessage (props){
         // </div>
         <div className="bubbleWrapper">
 		<div className={`inlineContainer ${bubble === 'own' ? 'own' : null}`}>
-			{bubble === 'other' ? <img className="inlineIcon" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" /> : <img className="inlineIcon" src="https://www.pinclipart.com/picdir/middle/205-2059398_blinkk-en-mac-app-store-ninja-icon-transparent.png" />}
+			{bubble === 'other' ? <img className="inlineIcon" src="https://cdn2.iconfinder.com/data/icons/ninja-turtles-flaticons/64/raphael-avatar-people-super_hero-ninja-ninja_turtles-warrior-cultures-japanese-oriental-1024.png" /> : <img className="inlineIcon" src="https://www.pinclipart.com/picdir/middle/205-2059398_blinkk-en-mac-app-store-ninja-icon-transparent.png" />}
 			<div className={`${bubble}Bubble ${bubble}`}>
 				{text}
 			</div>
