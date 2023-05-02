@@ -8,13 +8,16 @@ import {collection, addDoc, serverTimestamp, query, orderBy, limit, where} from 
 import {useCollectionData} from 'react-firebase-hooks/firestore'
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
+import {getServerSession} from 'next-auth/next'
 
 import {db} from '../../firebase'
 import ChatMessage from '../../libs/components/ChatMessage'
+import { authOptions } from '../api/auth/[...nextauth]';
 
 export async function getServerSideProps(ctx){
     // TODO: Fix http & HTTPS based on url
-    
+    const session = await getServerSession(ctx.req, ctx.res, authOptions)
+    if(session){
     const response = await fetch(`http://${ctx.req.headers.host}/api/room/check?roomFriendlyId=${ctx.query.id}`, {headers: {Cookie: ctx.req.headers.cookie}});
     // console.log(response)
     const data = await response.json()
@@ -38,14 +41,16 @@ export async function getServerSideProps(ctx){
             },
             props:{},
           };
+        }
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/",
+          },
+          props:{},
+        };
     
   }
-
-//   const AlwaysScrollToBottom = () => {
-//     const elementRef = useRef();
-//     useEffect(() => elementRef.current.scrollIntoView());
-//     return <div ref={elementRef} />;
-//   };
 
 
 // Main Component
@@ -95,11 +100,11 @@ export default function Chat(props) {
                 <Row >
                     <Container fluid style={{overflowY: 'scroll', height: '280px'}}>
                         {messages && messages.map((message, index)=>(
-                            <ChatMessage key={index} userEmail={message.userEmail} text={message.message} userName={message.userName} sessionEmail={session.user.email}/>
+                            <ChatMessage key={index} userEmail={message.userEmail} text={message.message} userName={message.userName} sessionEmail={session.user.email} time={message.createdAt}/>
                         ))}
                         <span ref={dummyRef}></span>
                     <Row >
-                        <Row style={{position: 'fixed', height: '80px', bottom: 0, width: "100%"}}>
+                        <Row style={{position: 'fixed', height: '70px', bottom: 0, width: "100%"}}>
                             {/* <Col>
                             </Col> */}
                             <Col>
