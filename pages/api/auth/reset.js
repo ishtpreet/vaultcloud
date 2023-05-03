@@ -4,26 +4,22 @@ import { authOptions } from "../auth/[...nextauth]"
 import Requests from "../../../libs/models/Requests";
 import Users from "../../../libs/models/Users";
 import nodemailer from 'nodemailer'
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcrypt'
 
 export default connectDB(async function reset(req, res){
 
-        const user = await Users.findOne({token: req.query.token})
+        const user = await Users.findOne({token: req.body.token})
         if(user){
             if(user.token){
                 user.token=''
             }
-            bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-                // Store hash in your password DB.
-            });
-                    res.status(200).json({message: 'success', data: user})
-                    return
-                    //   res.status(200).send({message:'e-Mail Sent!'})
-                // 
-            
-            
-            
-        } else {
+            const salt = await bcrypt.genSalt(10);
+            const hashPass = await bcrypt.hash(req.body.password, salt)
+            user.password = hashPass
+            await user.save();
+            res.status(200).json({message: 'success', data: user})
+        } 
+        else {
             // Not Signed in
             return res.status(403).json({success: false, message: 'Invalid User'})
     }

@@ -147,7 +147,8 @@ export default function Chat(props) {
             <h5>Room Name:&nbsp;<Link href={`/room/${props.id}`} size="xs"><GiLighthouse /></Link> &nbsp;{props.roomName} </h5>
                     </div>
                         <Container justify="center" alignItems="center" style={{marginTop: '1%'}}>
-                    <Container fluid style={{overflowY: 'scroll', height: '310px', paddingInline:'2%'}}>
+                    <Container fluid style={{overflowY: 'scroll', height: '310px', paddingInline:'2%' }}>
+                      {/* boxShadow: "5px 10px 5px 5px #5b5377" */}
                         {messages && messages.map((message, index)=>(
                             <ChatMessage key={index} userEmail={message.userEmail} text={message.message} userName={message.userName} sessionEmail={session.user.email} time={message.createdAt} messageType={message.type} publicUrl={message.publicUrl ? message.publicUrl : ""}/> 
                         ))}

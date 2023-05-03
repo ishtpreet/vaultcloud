@@ -32,6 +32,13 @@ const handleSubmit = () => {
     }
     let options = { redirect: false, email, password }
         const res = await signIn("credentials", options)
+        console.log("login",res)
+        if(!res.ok){
+          toast.error("Email or password is incorrect",{
+            position: toast.POSITION.BOTTOM_RIGHT
+          })
+          return
+        }
         return router.push("/dashboard")
   }
   const handleForgetPassword = async (e) =>{
@@ -93,7 +100,7 @@ const handleSubmit = () => {
               <Text size={14}>Remember me</Text>
             </Checkbox>
             {/* <Text size={14}>Forgot password?</Text> */}
-            <Button auto onClick={() => setVisible(true)}>
+            <Button color="secondary" auto onClick={() => setVisible(true)}>
             Forget Password
           </Button>
           </Row>

@@ -15,6 +15,9 @@ export default function Listfiles({data}) {
             router.push("/")
     }
 })
+const openInNewTab = url => {
+  window.open(url, '_blank', 'noopener,noreferrer');
+};
 
 
   return (
@@ -43,10 +46,9 @@ export default function Listfiles({data}) {
         <Card.Divider />
         <Card.Footer>
           <Row justify="flex-end">
-            <Button color="success" size="sm" light>
-              Share
+            <Button onClick={()=>openInNewTab(`https://testminorbucket.s3.ap-south-1.amazonaws.com/${content.Key}`)} color="success" size="sm" light>
+              Open
             </Button>
-            <Button color="error" size="sm">Delete</Button>
           </Row>
         </Card.Footer>
       </Card>

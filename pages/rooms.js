@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from "react"
-import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading, Switch } from "@nextui-org/react"
+import { Container, Grid, Card, Text, Spacer, Button, Row, Modal, useModal, Table, Popover, Input, Loading, Switch, Col } from "@nextui-org/react"
 import { useSession } from "next-auth/react"
 import { getServerSession } from "next-auth/next"
 import { useRouter } from "next/router"
@@ -12,10 +12,13 @@ import {BsShareFill, BsPersonCircle} from 'react-icons/bs'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import { authOptions } from "./api/auth/[...nextauth]";
+import {useMediaQuery } from '../libs/utils/useMediaQuery'
 
 export default function ListRooms({data}) {
     console.log(data)
+    const isSm = useMediaQuery(650)
     const { setVisible, bindings } = useModal();
     const [roomData, setRoomData] = useState()
     const [isInviteLoading, setIsInviteLoading] = useState(false)
@@ -64,7 +67,9 @@ const sendInvite = async () =>{
     .then((res)=>{
       console.log(res.data)
       // setIsInviteLoading(false)
-      setReceiptEmail()
+      setReceiptEmail("")
+      setVisible(false)
+      setRoomData("")
       // setRoomData()
       // TODO: Add Success Alert and close modal
         toast.success('Invite sent', {
@@ -86,6 +91,32 @@ const sendInvite = async () =>{
 const refreshData = () => {
   router.replace(router.asPath);
 }
+const onPressDeleteMemberBtn = async (member) =>{
+  if(!member || !roomData){
+    return
+  }
+  const roomId = roomData._id
+  const memberId = member._id
+  console.log("roomId && memberId", roomId, memberId)
+  // const {roomId, memberId} = memeber
+  axios.get(`/api/invite/deleteMember?roomId=${roomId}&memberId=${memberId}`)
+  .then((res)=>{
+    console.log(res.data)
+    toast.success(`${member.name} removed from ${roomData.name}`,{
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+    refreshData()
+    setVisible(false)
+    setRoomData("")
+  })
+  .catch((err)=>{
+    console.log(err)
+    toast.error("Error occured, please try again!",{
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+  })
+
+} 
 
   return (
     <Container fluid>
@@ -99,7 +130,7 @@ const refreshData = () => {
       <Grid.Container gap={3} justify="center" alignItems="center">
         {data && !sharedRooms && data.rooms.map((room, key)=>
         <Grid xs={4} key={key}>
-        <Card css={{ mw: "330px" }}>
+        <Card css={{ mw: "350px" }}>
         <Card.Image
             // src={`https://loremflickr.com/320/240`}
             src={`https://source.unsplash.com/user/wsanter/320x240`}
@@ -117,15 +148,21 @@ const refreshData = () => {
         </Card.Body>
         <Card.Divider />
         <Card.Footer>
-          <Row justify="flex-end">
-            <Button as={Link} href={`/room/${room.shortId}`} color="success" size="sm" auto>
-             <MdOpenInNew />&nbsp; Open
-            </Button>&nbsp;
-            <Button onPress={(e) => onPressSettingsBtn(e, room)} color="secondary" size="sm" auto>
-             <GiSettingsKnobs />&nbsp; Settings
-            </Button>&nbsp;
-            <Button color="error" size="sm" auto onClick={(e) => onPressDeleteBtn(e, room)}><AiFillDelete /> &nbsp;Delete</Button>
-          </Row>
+          <Grid.Container justify="center" alignItems="center" gap={1}>
+            <Grid xs={4} lg={4} md={4}>
+            <Button as={Link} href={`/room/${room.shortId}`} size='sm' color="success" auto>
+             <MdOpenInNew />{isSm ? null : 'Open'}
+            </Button>
+            </Grid>
+            <Grid xs={4} lg={4} md={4}>
+            <Button onPress={(e) => onPressSettingsBtn(e, room)} size='sm' color="secondary" auto>
+             <GiSettingsKnobs />{isSm ? null : 'Settings'}
+            </Button>
+            </Grid>
+            <Grid xs={4} lg={4} md={4}>
+            <Button color="error" size='sm' auto onClick={(e) => onPressDeleteBtn(e, room)}><AiFillDelete />  {isSm ? null : 'Delete'}</Button>
+            </Grid>
+          </Grid.Container>
         </Card.Footer>
       </Card>
         </Grid>
@@ -134,8 +171,8 @@ const refreshData = () => {
         </Grid.Container>
         </Grid.Container>
         <Modal
-        blur
         scroll
+        blur
         width="600px"
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
@@ -161,7 +198,7 @@ const refreshData = () => {
       <Table.Row key={key}>
           <Table.Cell>{key+1}</Table.Cell>
           <Table.Cell>{member.name}</Table.Cell>
-          <Table.Cell><Button color="error" auto>Remove</Button></Table.Cell>
+          <Table.Cell><Button color="error" auto onClick={(e)=> onPressDeleteMemberBtn(member)}>Remove</Button></Table.Cell>
           </Table.Row>)}
         </Table.Body>
           </Table>}

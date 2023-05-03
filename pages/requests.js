@@ -68,8 +68,8 @@ const acceptInvite = async (e, requestId, roomId) =>{
           <Row justify="flex-end">
             <Button color="success" size="sm" auto onClick={(e)=>acceptInvite(e, invite._id, invite.roomId)}>
              <TiTick />&nbsp; Accept
-            </Button>&nbsp;
-            <Button color="error" size="sm" auto><ImCross /> &nbsp;Decline</Button>
+            </Button>
+            {/* <Button color="error" size="sm" auto><ImCross /> &nbsp;Decline</Button> */}
           </Row>}
         </Card.Footer>
       </Card>

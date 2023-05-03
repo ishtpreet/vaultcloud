@@ -17,7 +17,7 @@ export default connectDB(async function list(req, res){
         //     createdBy: user._id
         // })
         // await newRoom.save()
-        const rooms = await Rooms.find({createdBy: user._id}).populate("members", {password: 0, createdAt: 0, email: 0})
+        const rooms = await Rooms.find({createdBy: user._id}).populate("members", {password: 0, createdAt: 0})
         // const sharedRooms = await Rooms.find({})
         const requests = await Requests.find({recepientEmail: user.email, accepted: true}).populate("roomId").populate("createdBy", {password: 0})
         // console.log(requests)

@@ -11,9 +11,10 @@ export default connectDB(async function create(req, res){
     if (session) {
         const user = await Users.findOne({email: session.user.email})
         if(user){
-
+            // console.log(req.query.email)
             const recepientUser = await Users.findOne({email: req.query.email})
             if(recepientUser){
+                // console.log("Hi", recepientUser._id)
                 const inviteRequest = new Requests({
                     recepientEmail: recepientUser.email,
                     roomName: req.query.roomName,
@@ -38,20 +39,23 @@ export default connectDB(async function create(req, res){
                     html: '<p>Hi ,</p><p>'+user.name+' invited you to join his room <b>'+req.query.roomName+'</b></p><p>Click on the link to access the invite. https://vaultcloud.netlify.app</p>'// FIXME: Change URL
                   };
                   transporter.sendMail(mailOptions, function (err, info) {
-                    if(err)
-                      return res.status(500).send({message:err})
-
-
-                    res.status(200).json({message: 'success', data: inviteRequest})
+                    if(!err){
+                        res.status(200).json({message: 'success', data: inviteRequest})
+                        return
+                    }
+                    res.status(500).send({message:err})
                     return
                     //   res.status(200).send({message:'e-Mail Sent!'})
                  });
                 // 
-
             }
-            return res.status(400).json({success: false, message: 'Invalid Email'})
+            else{
+                return res.status(400).json({success: false, message: 'Invalid Email'})
+            }
         }
-        return res.status(403).json({success: false, message: 'Invalid User'})
+        else{
+            return res.status(403).json({success: false, message: 'Invalid User'})
+        }
 
 
     } else {
