@@ -1,20 +1,31 @@
 'use-client';
 import { useState } from 'react';
-import { Spacer, Container, Row, Text, Button, Card, Input, Checkbox, Grid} from '@nextui-org/react';
+import { Spacer, Container, Row, Text, Button, Card, Input, Checkbox, Grid,Modal} from '@nextui-org/react';
 import {RiLockPasswordFill, RiMailOpenFill} from 'react-icons/ri'
 import {signIn, useSession} from 'next-auth/react'
 import {useRouter} from 'next/router'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Login() {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
+  const [visible, setVisible] = useState(false);
+  const  [forgetEmail, setForgetEmail] = useState()
   const router = useRouter()
   const {data: session} = useSession()
   if(session && session.user){
     router.push("/dashboard")
   }
-
+  //const handler = () => setVisible(true);
+const handleSubmit = () => {
+}
+  const closeHandler = () => {
+    setVisible(false);
+    console.log("closed");
+  };
   const handleSignIn = async (e) =>{
     if(!email && !password){
       return
@@ -23,6 +34,22 @@ export default function Login() {
         const res = await signIn("credentials", options)
         return router.push("/dashboard")
   }
+  const handleForgetPassword = async (e) =>{
+    if(!forgetEmail){
+      return
+    }
+    axios.get(`/api/auth/forgot?email=${forgetEmail}`)
+      .then((res)=>{
+      console.log(res.data)
+      toast.success('Password Reset Link Sent', {
+        position: toast.POSITION.BOTTOM_RIGHT
+    });
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+
 
   return (
     <Grid.Container justify="center" style={{marginTop: '12vh'}}>
@@ -65,7 +92,10 @@ export default function Login() {
             <Checkbox>
               <Text size={14}>Remember me</Text>
             </Checkbox>
-            <Text size={14}>Forgot password?</Text>
+            {/* <Text size={14}>Forgot password?</Text> */}
+            <Button auto onClick={() => setVisible(true)}>
+            Forget Password
+          </Button>
           </Row>
         </Card.Body>
         <Card.Footer>
@@ -79,6 +109,33 @@ export default function Login() {
     </Card>
    
    </Grid>
+   <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={visible}
+        onClose={closeHandler}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={18}>
+            Forgot Password
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+
+                <Input
+            clearable
+            bordered
+            fullWidth
+            color="primary"
+            size="lg"
+            placeholder="Email"
+            value={forgetEmail} 
+            onChange={(e) => setForgetEmail(e.target.value)}/>
+                    
+    </Modal.Body>
+                <Modal.Footer><Button color="secondary" auto onClick={handleForgetPassword}>Submit</Button></Modal.Footer>
+   </Modal>
+    <ToastContainer />
     </Grid.Container>
   )
 }
